@@ -21,3 +21,5 @@ export default function Protected({ children, authentication = true }) {
 
   return loader ? <h1>loading...</h1> : <>{children}</>;
 }
+
+export default Protected;
