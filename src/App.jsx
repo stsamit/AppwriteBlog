@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     authService
-      .getCurrentUser()
+      .getCurrentUser() // here may be error
       .then((userData) => {
         if (userData) {
           dispatch(login({ userData }));
@@ -27,11 +27,15 @@ function App() {
     <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
       <div className="w-full block">
         <Header />
-        <main>{/* <Outlet /> */}</main>
+        <main>
+          <Outlet />
+        </main>
         <Footer />
       </div>
     </div>
-  ) : null;
+  ) : (
+    <div>loading...</div>
+  );
 }
 
 export default App;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import { Link, useNavigate } from "react-router";
 import authService from "../appwrite/auth";
 import { login } from "../store/authSlice";
@@ -12,13 +12,13 @@ function Signup() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
 
-  const create = async (datat) => {
+  const create = async (data) => {
     setError("");
     try {
       const account = await authService.createAccount(data);
       if (account) {
         const userData = await authService.getCurrentUser();
-        if (userData) dispatch(login(userData));
+        if (userData) dispatch(login({ userData }));
         navigate("/");
       }
     } catch (error) {

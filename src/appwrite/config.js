@@ -108,7 +108,7 @@ export class Service {
     try {
       return await this.bucket.deleteFile({
         bucketId: conf.appwriteBucketId,
-        fileId: ID.unique(),
+        fileId,
       });
     } catch (error) {
       console.log("Appwrite service :: deleteFile :: error", error);
@@ -118,7 +118,7 @@ export class Service {
 
   getFilePreview(fileId) {
     return this.bucket.getFilePreview({
-      bucketId: conf.appwriteCollectionId,
+      bucketId: conf.appwriteBucketId,
       fileId,
     });
   }

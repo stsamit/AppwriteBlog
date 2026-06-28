@@ -11,6 +11,7 @@ import Login from "./Login";
 import PostForm from "./post-form/PostForm";
 import PostCard from "./PostCard";
 import Protected from "./AuthLayout";
+import Select from "./Select";
 
 export {
   Header,
@@ -26,4 +27,5 @@ export {
   PostForm,
   PostCard,
   Protected,
+  Select,
 };

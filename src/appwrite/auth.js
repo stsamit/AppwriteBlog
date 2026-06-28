@@ -33,10 +33,7 @@ export class AuthService {
 
   async login({ email, password }) {
     try {
-      return await account.createEmailPasswordSession({
-        email,
-        password,
-      });
+      return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
       throw error;
     }
@@ -47,16 +44,18 @@ export class AuthService {
       return await this.account.get();
     } catch (error) {
       console.log("Appwrite service :: getCurrentUser :: error", error);
+      return null;
     }
 
-    return null;
+    // return null;
+    //error is here -> returning null and null.status is not valid so we have to handle this where we use the service
   }
 
   async logout() {
     try {
       await this.account.deleteSessions();
     } catch (error) {
-      console.log("Appwrite service :: getCurrentUser :: error", error);
+      console.log("Appwrite service :: deleteSessions :: error", error);
     }
   }
 }
