@@ -7,7 +7,6 @@ function Home() {
   useEffect(() => {
     appwriteService.getPosts().then((post) => {
       if (post) {
-        console.log(post.rows);
         setPosts(post.rows);
       }
     });
@@ -34,7 +33,7 @@ function Home() {
       <div className="flex flex-wrap">
         {posts.map((post) => (
           <div key={post.$id} className="p-2 w-1/4">
-            <PostCard {...post} />
+            <PostCard post={post} />
           </div>
         ))}
       </div>

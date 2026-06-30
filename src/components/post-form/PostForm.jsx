@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, Select, RTE } from "../index";
 import appwriteService from "../../appwrite/config";
-import { useNavigate, useResolvedPath } from "react-router";
+import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 
 function PostForm({ post }) {
@@ -17,12 +17,14 @@ function PostForm({ post }) {
     });
 
   const navigate = useNavigate();
-  const userData = useSelector((state) => state.user.userData);
+  const userData = useSelector((state) => state.auth.userData);
+  console.log("userData", userData);
 
   const submit = async (data) => {
+    console.log("submit is clicked");
     if (post) {
       const file = data.image[0]
-        ? appwriteService.uploadFile(data.image[0])
+        ? await appwriteService.uploadFile(data.image[0])
         : null;
 
       if (file) {
@@ -38,6 +40,7 @@ function PostForm({ post }) {
         navigate(`/post/${post.$id}`);
       }
     } else {
+      console.log("inside the else part");
       const file = await appwriteService.uploadFile(data.image[0]);
 
       if (file) {
@@ -57,11 +60,7 @@ function PostForm({ post }) {
 
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string") {
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/^[a-zA-Z\d\s]+/g, "-")
-        .replace(/\s/g, "-");
+      return value.trim().toLowerCase().replace(" ", "-");
     }
 
     return "";
