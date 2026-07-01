@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { Button, Input, Select, RTE } from "../index";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setPostsToStore } from "../../store/postSlice";
 
 function PostForm({ post }) {
   const { register, handleSubmit, watch, setValue, control, getValues } =
@@ -17,6 +18,7 @@ function PostForm({ post }) {
     });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
   console.log("userData", userData);
 
@@ -37,10 +39,20 @@ function PostForm({ post }) {
       });
 
       if (dbPost) {
-        navigate(`/post/${post.$id}`);
+        await appwriteService
+          .getPosts()
+          .then((posts) => {
+            if (posts) {
+              // console.log("from login page", posts);
+              dispatch(setPostsToStore(posts.rows));
+            }
+          })
+          .finally(() => {
+            navigate(`/post/${post.$id}`);
+          });
       }
     } else {
-      console.log("inside the else part");
+      // console.log("inside the else part");
       const file = await appwriteService.uploadFile(data.image[0]);
 
       if (file) {
@@ -52,16 +64,28 @@ function PostForm({ post }) {
         });
 
         if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
+          await appwriteService
+            .getPosts()
+            .then((posts) => {
+              if (posts) {
+                dispatch(setPostsToStore(posts.rows));
+              }
+            })
+            .finally(() => {
+              navigate(`/post/${dbPost.$id}`);
+            });
         }
       }
     }
   };
 
   const slugTransform = useCallback((value) => {
-    if (value && typeof value === "string") {
-      return value.trim().toLowerCase().replace(" ", "-");
-    }
+    if (value && typeof value === "string")
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-zA-Z\d\s]+/g, "-")
+        .replace(/\s/g, "-");
 
     return "";
   }, []);

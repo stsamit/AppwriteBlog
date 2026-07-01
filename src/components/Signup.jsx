@@ -5,6 +5,8 @@ import { login } from "../store/authSlice";
 import { Button, Input, Logo } from "./index";
 import { useDispatch } from "react-redux";
 import { get, useForm } from "react-hook-form";
+import appwriteService from "../appwrite/config";
+import { setPostsToStore } from "../store/postSlice";
 
 function Signup() {
   const navigate = useNavigate();
@@ -18,7 +20,19 @@ function Signup() {
       const account = await authService.createAccount(data);
       if (account) {
         const userData = await authService.getCurrentUser();
-        if (userData) dispatch(login({ userData }));
+        if (userData) {
+          dispatch(login({ userData }));
+          await appwriteService
+            .getPosts()
+            .then((posts) => {
+              if (posts) {
+                dispatch(setPostsToStore(posts.rows));
+              }
+            })
+            .catch((error) => {
+              dispatch(setPostsToStore([]));
+            });
+        }
         navigate("/");
       }
     } catch (error) {

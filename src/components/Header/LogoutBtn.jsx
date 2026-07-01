@@ -3,12 +3,14 @@ import { useDispatch } from "react-redux";
 import authService from "../../appwrite/auth";
 
 import { logout } from "../../store/authSlice";
+import { removePostsFromStore } from "../../store/postSlice";
 
 function LogoutBtn() {
   const dispatch = useDispatch();
   const logoutHandler = () => {
     authService.logout().then(() => {
       dispatch(logout());
+      dispatch(removePostsFromStore());
     });
   };
   return (

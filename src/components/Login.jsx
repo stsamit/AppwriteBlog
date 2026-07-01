@@ -5,6 +5,8 @@ import { Button, Logo, Input } from "./index";
 import { useDispatch } from "react-redux";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import appwriteService from "../appwrite/config";
+import { setPostsToStore } from "../store/postSlice";
 
 function Login() {
   const navigate = useNavigate();
@@ -18,7 +20,21 @@ function Login() {
       const session = await authService.login(data);
       if (session) {
         const userData = await authService.getCurrentUser();
-        if (userData) dispatch(authLogin({ userData }));
+        if (userData) {
+          dispatch(authLogin({ userData }));
+          await appwriteService
+            .getPosts()
+            .then((posts) => {
+              if (posts) {
+                console.log("from login page", posts);
+                dispatch(setPostsToStore(posts.rows));
+              }
+            })
+            .catch((error) => {
+              dispatch(setPostsToStore([]));
+            });
+        }
+
         navigate("/");
       }
     } catch (error) {

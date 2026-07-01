@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import appwriteService from "../appwrite/config";
 import { Container, PostCard } from "../components";
-function AllPosts() {
-  const [posts, setPosts] = useState([]);
+import { useDispatch, useSelector } from "react-redux";
 
-  useEffect(() => {
-    appwriteService
-      .getPosts() // error could be here because passing a []
-      .then((posts) => {
-        if (posts) {
-          setPosts(posts.rows);
-        }
-      })
-      .catch((error) => {
-        console.log("error fetching post", error);
-      });
-  }, []);
+function AllPosts() {
+  // const [posts, setPosts] = useState([]);
+
+  // useEffect(() => {
+  //   appwriteService
+  //     .getPosts() // error could be here because passing a []
+  //     .then((posts) => {
+  //       if (posts) {
+  //         setPosts(posts.rows);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log("error fetching post", error);
+  //     });
+  // }, []);
+
+  const posts = useSelector((state) => state.posts.allPosts);
+  // console.log("from AllPosts.jsx", posts);
 
   return (
     <div className="w-full py-8">
